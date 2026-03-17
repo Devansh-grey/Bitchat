@@ -10,7 +10,7 @@ const signup = async (req, res) => {
         // checking existence of user
         const exist = await User.findOne({ email })
         if (exist) {
-            return res.json({
+            return res.status(409).json({
                 success: false,
                 message: "user already exist try logging in"
             })
@@ -26,8 +26,8 @@ const signup = async (req, res) => {
             email,
             password:hashedPassword
         })
-        createToken(user._id,res)
-        await user.save()
+        const saveduser = await user.save()
+        createToken(saveduser._id,res)
         
         res.status(201).json({
             success:true,
