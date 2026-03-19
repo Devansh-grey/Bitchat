@@ -1,7 +1,8 @@
-import { json } from "express"
 import User from "../models/User.js"
 import bcrypt from 'bcrypt'
 import { createToken } from "../middleware/auth.js"
+import { sendWelcomeEmail } from "../email/emailHandler.js"
+import { ENV } from "../utils/env.js"
 
 const signup = async (req, res) => {
     const { fullName, email, password } = req.body
@@ -36,6 +37,14 @@ const signup = async (req, res) => {
             email:user.email,
             profilePic:user.profilePic
         })
+
+        // sending welcome email 
+        try {
+            await sendWelcomeEmail(saveduser.email,saveduser.fullName,ENV.CLIENT_URL)
+        } catch (error) {
+            console.error("Failed to send welcome email",error);
+            
+        }
 
 
     } catch (error) {
