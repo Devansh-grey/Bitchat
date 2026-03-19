@@ -6,7 +6,7 @@ import { connectDB } from './utils/db.js';
 import { ENV } from './utils/env.js';
 
 const app = express();
-const port = ENV.PORT || 5000;
+const port = Number(ENV.PORT ?? 5000);
 
 // middleware
 app.use(express.json());
