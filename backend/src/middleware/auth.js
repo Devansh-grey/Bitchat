@@ -7,7 +7,7 @@ const createToken = async (userId,res) => {
         ENV.JWT_SECRET,
         {expiresIn:"7d"}
     )
-    res.cookie("jwt",token,{
+    res.cookie("token",token,{
         maxAge:7*24*60*60*1000, //in ms
         httpOnly:true,
         sameSite:"strict",
@@ -17,5 +17,9 @@ const createToken = async (userId,res) => {
     return token
 }
 
-export {createToken}
+const authenticateUser = async (req,res) => {
+    
+}
+
+export {createToken,authenticateUser}
 

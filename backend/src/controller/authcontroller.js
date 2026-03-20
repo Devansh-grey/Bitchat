@@ -19,40 +19,71 @@ const signup = async (req, res) => {
 
         // hashing password
         const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password,salt)
+        const hashedPassword = await bcrypt.hash(password, salt)
 
         // creating new user
         const user = new User({
             fullName,
             email,
-            password:hashedPassword
+            password: hashedPassword
         })
         const saveduser = await user.save()
-        createToken(saveduser._id,res)
-        
+        createToken(saveduser._id, res)
+
         res.status(201).json({
-            success:true,
+            success: true,
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePic: user.profilePic
+        })
+
+        // sending welcome email 
+        try {
+            await sendWelcomeEmail(saveduser.email, saveduser.fullName, ENV.CLIENT_URL)
+        } catch (error) {
+            console.error("Failed to send welcome email", error);
+
+        }
+
+
+    } catch (error) {
+        console.log("error in auth Controller", error.message);
+        res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+}
+
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({ message: "User doesn't exist register" });
+        }
+        const isPassword = await bcrypt.compare(password,user.password);
+        if (!isPassword) {
+             return res.status(400).json({ message: "Invalid credentials" });
+        }
+        createToken(user._id,res)
+        res.status(200).json({
             _id:user._id,
             fullName:user.fullName,
             email:user.email,
             profilePic:user.profilePic
         })
 
-        // sending welcome email 
-        try {
-            await sendWelcomeEmail(saveduser.email,saveduser.fullName,ENV.CLIENT_URL)
-        } catch (error) {
-            console.error("Failed to send welcome email",error);
-            
-        }
-
 
     } catch (error) {
-        console.log("error in auth Controller",error.message);
-        res.status(500).json({
-            message:"Internal server error"
-        })
+        console.error("Error in login controller",error.message);
+        res.status(500).json({message:"Internal server error"})
     }
 }
 
-export { signup }
+const logout = async (_, res) => {
+    res.cookie("token","",{maxAge:0})
+    res.status(200).json({message:"Logged out successfully"})
+}
+
+export { signup, login, logout }
