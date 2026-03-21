@@ -99,11 +99,12 @@ try {
         userId,
         {profilePic:uploadResponse.secure_url},
         {new:true})
+        .select("-password")
     
     res.status(200).json({updatedUser})
 } catch (error) {
-    console.error("error in ypdating profile",error);
-    res.status(500),json({message:"Internal server error"})
+    console.error("error in updating profile",error);
+    return res.status(500).json({message:"Internal server error"})
 }
 }
 export { signup, login, logout,updateProfile }

@@ -1,7 +1,13 @@
 import 'dotenv/config'
 
 
-const requiredVars = ['JWT_SECRET', 'MONGO_URI'];
+const requiredVars = [
+    'JWT_SECRET',
+    'MONGO_URI',
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_API_KEY',
+    'CLOUDINARY_API_SECRET'
+];
 for (const key of requiredVars) {
     if (!process.env[key]) {
         throw new Error(`Missing required environment variable: ${key}`);
