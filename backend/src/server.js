@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import path from 'path'
 
 import authRoutes from './routes/userRoute.js';
 import { connectDB } from './utils/db.js';
@@ -7,6 +8,7 @@ import { ENV } from './utils/env.js';
 
 const app = express();
 const port = Number(ENV.PORT ?? 5000);
+const _dirname = path.resolve()
 
 // middleware
 app.use(express.json());
@@ -14,10 +16,17 @@ app.use(cookieParser());
 
 // routes
 app.use('/api/auth', authRoutes);
-
 app.get('/', (req, res) => {
     res.send("express working");
 });
+
+if(process.env.NODE_ENV=="production"){
+    app.use(express.static(path.join(_dirname,"../frontend/dist")))
+
+    app.get("*",(req,res) =>{
+        res.sendFile(path.join(_dirname,"../frontend","dist","index.html"))
+    })
+}
 
 // start server AFTER setup
 (async () => {
