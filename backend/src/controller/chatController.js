@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
 import Chat from "../models/Chat.js";
+import User from "../models/User.js"
+
 
 export const accessChat = async (req, res) => {
 
@@ -67,7 +70,7 @@ export const accessChat = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            data: fullChat
+            data: chat
         });
 
     } catch (error) {
@@ -109,6 +112,13 @@ export const getChats = async (req, res) => {
 
 export const getChatById = async (req, res) => {
     try {
+
+         if (!mongoose.Types.ObjectId.isValid(req.params.chatId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid chatId"
+            });
+        }
         const chat = await Chat.findOne({
             _id: req.params.chatId,
             participants: req.user._id

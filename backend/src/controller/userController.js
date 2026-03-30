@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import cloudinary from "../utils/cloudinary.js"
-
+import mongoose from "mongoose";
 
 export const searchUsers = async (req, res) => {
     try {
@@ -38,6 +38,12 @@ export const searchUsers = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user id"
+            });
+        }
         const user = await User.findById(req.params.id)
             .select("-password");
 
