@@ -34,19 +34,19 @@ app.use('/api/user', userRoutes)
 app.use('/api/chats', chatRoutes)
 app.use('/api/message', messageRoutes)
 
-// Health check
-app.get('/', (req, res) => {
-    res.send("express working")
-})
 
 // Production static file serving
 if (ENV.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../../frontend/dist")))
-
+    
     app.get("/{*path}", (req, res) => {
         res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))
     })
 }
+// Health check
+app.get('/', (req, res) => {
+    res.send("express working")
+})
 console.log("NODE_ENV:", ENV.NODE_ENV)
 console.log("__dirname:", __dirname)
 console.log("static path:", path.join(__dirname, "../../frontend/dist"))
