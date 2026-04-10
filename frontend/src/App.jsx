@@ -22,7 +22,7 @@ const App = () => {
     <ToastProvider>
       <div className="min-h-screen flex flex-col bg-white text-black [font-family:var(--font-body)]">
 
-        <Navbar />
+       {!authUser ? <Navbar /> : null}
 
         <main className="grow">
           <Routes>
@@ -32,7 +32,7 @@ const App = () => {
           </Routes>
         </main>
 
-        <Footer />
+        {!authUser ? <Footer /> : null}
 
       </div>
     </ToastProvider>
