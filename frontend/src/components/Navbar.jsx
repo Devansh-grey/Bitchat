@@ -2,11 +2,13 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/AuthStore.js';
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
+import { useToast } from "../components/ToastProvider"
 
 const Navbar = () => {
 
   const navigate = useNavigate()
   const { authUser, logout } = useAuthStore()
+  const toast = useToast()
 
   return (
     <div className="flex justify-between items-center border-b-2 border-black px-6 py-4">
@@ -46,7 +48,14 @@ const Navbar = () => {
               className="bg-white border border-black shadow-md"
             >
               <DropdownMenu.Item
-                onClick={logout}
+                onClick={async () => {
+                  try {
+                    await logout
+                  } catch (error) {
+                    console.error("error loging in", error);
+                    toast.error("error logging out")
+                  }
+                }}
                 className="px-4 py-2 text-sm hover:bg-black hover:text-white cursor-pointer"
               >
                 Logout

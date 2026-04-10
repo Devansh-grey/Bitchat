@@ -33,9 +33,9 @@ export function ToastProvider({ children }) {
             key={toast.id}
             duration={4000}
             className={`px-4 py-3 rounded-md shadow-lg border
-              ${toast.type === "success" && "bg-black text-white border-white"}
-              ${toast.type === "error" && "bg-white text-black border-black"}
-              ${toast.type === "loading" && "bg-black text-white border-dashed border-white"}
+              ${toast.type === "success" ? "bg-black text-white border-white":""}
+              ${toast.type === "error" ? "bg-white text-black border-black":""}
+              ${toast.type === "loading" ? "bg-black text-white border-dashed border-white":""}
             `}
           >
             <Toast.Description className="text-sm">
@@ -52,5 +52,9 @@ export function ToastProvider({ children }) {
 }
 
 export function useToast() {
-  return useContext(ToastContext)
+ const context = useContext(ToastContext)
+  if (!context) {
+    throw new Error("useToast must be used within a ToastProvider")
+  }
+  return context
 }
